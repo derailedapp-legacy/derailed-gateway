@@ -1,0 +1,30 @@
+[tool.poetry]
+name = "derailed-gateway"
+version = "0.0.0"
+description = ""
+authors = ["VincentRPS <vincentbusiness55@gmail.com>"]
+
+[tool.isort]
+profile = 'black'
+
+[tool.black]
+target-version = ['py310']
+skip-string-normalization = true
+
+[tool.poetry.dependencies]
+python = "~3.10"
+websockets = "^10.3"
+limits = "^2.7.0"
+aiokafka = "^0.7.2"
+pydantic = "^1.9.2"
+msgspec = "^0.8.0"
+coredis = "^4.5.4"
+sentry-sdk = "^1.9.5"
+
+[tool.poetry.dev-dependencies]
+black = "^22.6.0"
+isort = "^5.10.1"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
