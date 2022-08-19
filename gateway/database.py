@@ -21,7 +21,7 @@ DOCUMENT_MODELS = [
 class Message(Struct):
     name: str
     data: dict[str, Any]
-    user_id: int | None = None
+    user_id: str | None = None
 
 
 async def connect() -> None:
