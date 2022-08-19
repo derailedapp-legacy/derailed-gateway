@@ -1,0 +1,8 @@
+websockets==10.3
+limits==2.7.0
+aiokafka==0.7.2
+pydantic==1.9.2
+msgspec==0.8.0
+coredis==4.5.4
+sentry-sdk==1.9.5
+uvloop==0.16.0; platform_system!="Windows"
