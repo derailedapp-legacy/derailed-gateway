@@ -10,6 +10,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN pip install --no-cache-dir supervisor
 
 COPY . .
+ENV DEV=false
 
 EXPOSE 5000
 

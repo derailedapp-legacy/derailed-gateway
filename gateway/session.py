@@ -136,12 +136,17 @@ class Session:
 
             asyncio.create_task(self.on_event(data=data))
 
+    async def _disconnect(self, reason: str) -> None:
+        await self.ws.close(4008, reason=reason)
+        self._recv_task.cancel()
+
     async def run(self) -> None:
         try:
             await sub.make_ready()
             await self.send_event(3, {'session_id': self.session_id})
-            await self.loop_receive()
-        except (ConnectionClosed, ConnectionClosedOK):
+            self._recv_task = asyncio.create_task(self.loop_receive())
+            await self._recv_task
+        except (ConnectionClosed, ConnectionClosedOK, asyncio.CancelledError):
             pass
         except DisconnectException as exc:
             await self.ws.close(exc.code, exc.reason)

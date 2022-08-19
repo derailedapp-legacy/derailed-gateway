@@ -32,7 +32,7 @@ async def main():
         max_queue=None,
         ping_interval=45,
         ping_timeout=4,
-        reuse_port=True,
+        reuse_port=os.getenv('DEV') == 'false',
     ):
         await asyncio.Future()
 

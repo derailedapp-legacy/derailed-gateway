@@ -34,9 +34,22 @@ class Subscriptor:
             asyncio.create_task(self.iterate_events())
 
     async def iterate_events(self) -> None:
-        self.consumer.subscribe(['user'])
+        self.consumer.subscribe(['user', 'security'])
         async for msg in self.consumer:
             message = msgspec.msgpack.decode(msg, type=Message)
+
+            if message.name == 'USER_DISCONNECT':
+                user = self.user_id_sorted_sessions.get(message.user_id)
+
+                if user is None:
+                    continue
+
+                sessions = [self.sessions.get(session_id) for session_id in user]
+
+                for session in sessions:
+                    await session._disconnect(
+                        'Forceful Disconnection, could be a token reset or account deletion.'
+                    )
 
             if message.user_id:
                 user = self.user_id_sorted_sessions.get(message.user_id)
