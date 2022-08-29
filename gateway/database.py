@@ -22,6 +22,7 @@ class Message(Struct):
     name: str
     data: dict[str, Any]
     user_id: str | None = None
+    guild_id: str | None = None
 
 
 async def connect() -> None:
