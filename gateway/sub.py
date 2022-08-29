@@ -35,7 +35,9 @@ class Subscriptor:
             asyncio.create_task(self.iterate_events())
 
     async def iterate_events(self) -> None:
-        self.consumer.subscribe(['user', 'security', 'guild'])
+        self.consumer.subscribe(
+            ['user', 'security', 'guild', 'track', 'relationships', 'presences']
+        )
         async for msg in self.consumer:
             message = msgspec.msgpack.decode(msg, type=Message)
 
@@ -101,6 +103,26 @@ class Subscriptor:
                 websockets = []
 
                 for session_id in user:
+                    session = self.sessions.get(session_id)
+                    websockets.append(session.ws)
+
+                data = {
+                    'op': 0,
+                    't': message.name,
+                    'd': message.data,
+                }
+
+                broadcast(websockets=websockets, message=data)
+
+            elif message.guild_id:
+                sessions = self.guilds.get(message.guild_id)
+
+                if sessions is None:
+                    continue
+
+                websockets = []
+
+                for session_id in sessions:
                     session = self.sessions.get(session_id)
                     websockets.append(session.ws)
 
