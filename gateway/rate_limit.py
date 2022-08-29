@@ -1,6 +1,6 @@
-# The Recorder Gateway
+# The Derailed Gateway
 #
-# Copyright 2022 Recorder, Inc. All rights reserved.
+# Copyright 2022 Derailed Inc. All rights reserved.
 #
 # Sharing of any piece of code to any unauthorized third-party is not allowed.
 import os

@@ -1,6 +1,6 @@
-# The Recorder Gateway
+# The Derailed Gateway
 #
-# Copyright 2022 Recorder, Inc. All rights reserved.
+# Copyright 2022 Derailed Inc. All rights reserved.
 #
 # Sharing of any piece of code to any unauthorized third-party is not allowed.
 import asyncio
@@ -15,7 +15,7 @@ from pydantic import ValidationError
 from websockets.exceptions import ConnectionClosed, ConnectionClosedOK
 from websockets.server import WebSocketServerProtocol
 
-from gateway.payload import identify, receive
+from gateway.payload import guild_members, identify, receive
 from gateway.rate_limit import (
     identify_concurrency,
     identify_daily,
@@ -86,7 +86,7 @@ class Session:
 
         await self.get_ready()
         self.ready = True
-        sub.subscribe(session=self)
+        await sub.subscribe(session=self)
 
     async def get_ready(self) -> None:
         settings = await Settings.find_one(Settings.id == self.user.id)
@@ -96,6 +96,14 @@ class Session:
             'settings': settings.dict(exclude={'id'}),
         }
         await self.send_event(operation=0, data=ready_data, type='READY')
+
+    async def get_guild_members(self, data: dict) -> None:
+        try:
+            d = guild_members.GetGuildMembers.validate(data)
+        except ValidationError as exc:
+            await self.send_exception('INVALID_DATA', exc.json(None))
+
+        await sub.get_guild_members(session=self, guild_id=d.guild_id, limit=d.limit)
 
     async def on_event(self, data: str) -> None:
         if self.ready:
@@ -121,6 +129,8 @@ class Session:
 
         if d.op == 1:
             await self.on_identify(d.d)
+        elif d.op == 4:
+            await self.get_guild_members(d.d)
 
     async def loop_receive(self) -> None:
         async for msg in self.ws:
