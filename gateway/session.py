@@ -15,6 +15,7 @@ from pydantic import ValidationError
 from websockets.exceptions import ConnectionClosed, ConnectionClosedOK
 from websockets.server import WebSocketServerProtocol
 
+from gateway.models.guild import Member
 from gateway.payload import guild_members, identify, receive
 from gateway.rate_limit import (
     identify_concurrency,
@@ -72,14 +73,20 @@ class Session:
 
         self.user = user
 
-        concurrency_rate_limit = await window.hit(identify_concurrency, 'derailed-gateway-rate-limit-identify-concurrency', user.id)
+        concurrency_rate_limit = await window.hit(
+            identify_concurrency,
+            'derailed-gateway-rate-limit-identify-concurrency',
+            user.id,
+        )
 
         if concurrency_rate_limit is False:
             raise DisconnectException(
                 4002, 'Maximum concurrent connections every 5 seconds reached.'
             )
 
-        daily_rate_limit = await window.hit(identify_daily, 'derailed-gateway-rate-limit-identify-daily', user.id)
+        daily_rate_limit = await window.hit(
+            identify_daily, 'derailed-gateway-rate-limit-identify-daily', user.id
+        )
 
         if daily_rate_limit is False:
             raise DisconnectException(4003, 'Maximum daily connections (1000) reached.')
@@ -94,6 +101,10 @@ class Session:
         ready_data = {
             'user': self.user.dict(exclude={'password'}),
             'settings': settings.dict(exclude={'id'}),
+            'guild_ids': [
+                member.guild_id
+                async for member in Member.find(Member.user_id == self.user.id)
+            ],
         }
         await self.send_event(operation=0, data=ready_data, type='READY')
 
@@ -108,7 +119,10 @@ class Session:
     async def on_event(self, data: str) -> None:
         if self.ready:
             rate_limit = await window.hit(
-                message_receive, 'derailed-gateway-rate-limit-unready', self.user.id, self.session_id
+                message_receive,
+                'derailed-gateway-rate-limit-unready',
+                self.user.id,
+                self.session_id,
             )
 
             if rate_limit is False:

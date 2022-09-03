@@ -159,7 +159,7 @@ class Subscriptor:
         members = Member.find(Member.guild_id == guild_id, limit=limit)
 
         async for member in members:
-            dictified = member.dict(exclude={'user_id'})
+            dictified = member.dict(exclude={'user_id', 'id'})
 
             user = await User.find_one(User.id == member.user_id)
             dictified['user'] = user.dict(exclude={'password', 'email', 'verification'})
