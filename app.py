@@ -28,7 +28,7 @@ async def main():
     async with serve(
         create_session,
         host='0.0.0.0',
-        port=int(os.getenv('PORT', 5000)),
+        port=int(os.getenv('PORT', 7000)),
         max_queue=None,
         ping_interval=45,
         ping_timeout=4,

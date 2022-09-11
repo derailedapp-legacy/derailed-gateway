@@ -12,6 +12,6 @@ RUN pip install --no-cache-dir supervisor
 COPY . .
 ENV DEV=false
 
-EXPOSE 5000
+EXPOSE 7000
 
-CMD [ "supervisord", "-c supervisord.conf" "-n" ]
+CMD [ "supervisord", "-c", "supervisord.conf", "-n" ]
