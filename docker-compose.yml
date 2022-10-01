@@ -1,0 +1,41 @@
+services:
+  gateway:
+    container_name: derailed-gateway
+    restart: unless-stopped
+    depends_on:
+      - redis
+      - mongo
+      - zookeeper
+      - kafka
+    ports:
+      - "7000:7000"
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    environment:
+      - RATE_LIMIT_URI=redis://redis:6379
+      - MONGO_URI=mongodb://mongo:27017
+      - KAFKA_URI=kafka:9092
+      - PORT=7000
+
+  mongo:
+    image: mongo
+    volumes:
+      - ./.data/db:/data/db
+
+  zookeeper:
+    image: 'bitnami/zookeeper:latest'
+    environment:
+      - ALLOW_ANONYMOUS_LOGIN=yes
+
+  kafka:
+    image: 'bitnami/kafka:latest'
+    environment:
+      - KAFKA_BROKER_ID=1
+      - ALLOW_PLAINTEXT_LISTENER=yes
+      - KAFKA_LISTENERS=PLAINTEXT://:9092
+      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092
+      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:2181
+      - KAFKA_ADVERTISED_HOST_NAME=kafka
+    depends_on:
+      - zookeeper
