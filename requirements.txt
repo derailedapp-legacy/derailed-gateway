@@ -1,5 +1,6 @@
 websockets==10.3
 limits==2.7.0
+beanie==1.11.12
 aiokafka==0.7.2
 pydantic==1.9.2
 msgspec==0.8.0
