@@ -36,7 +36,7 @@ class Subscriptor:
 
     async def iterate_events(self) -> None:
         self.consumer.subscribe(
-            ['user', 'security', 'guild', 'track', 'relationships', 'presences']
+            ['user', 'security', 'guild', 'track', 'relationships', 'presences', 'messages']
         )
         async for msg in self.consumer:
             message = msgspec.msgpack.decode(msg, type=Message)
