@@ -14,4 +14,4 @@ ENV DEV=false
 
 EXPOSE 7000
 
-CMD [ "supervisord", "-c", "supervisord.conf", "-n" ]
+CMD [ "python", "app.py" ]
