@@ -10,11 +10,13 @@ from beanie import init_beanie
 from motor.motor_asyncio import AsyncIOMotorClient
 from msgspec import Struct
 
-from .models import Settings, User
+from .models import Settings, User, Guild, Member
 
 DOCUMENT_MODELS = [
     User,
     Settings,
+    Guild,
+    Member,
 ]
 
 
