@@ -12,6 +12,7 @@ from websockets.server import serve
 
 from gateway import database
 from gateway.session_maker import create_session
+from gateway.sub import sub
 
 
 async def main():
@@ -24,6 +25,7 @@ async def main():
         os.environ['SENTRY_ENABLED'] = 'false'
 
     await database.connect()
+    await sub.make_ready()
 
     async with serve(
         create_session,

@@ -166,7 +166,6 @@ class Session:
 
     async def run(self) -> None:
         try:
-            await sub.make_ready()
             await self.send_event(3, {'session_id': self.session_id})
             self._recv_task = asyncio.create_task(self.loop_receive())
             await self._recv_task
