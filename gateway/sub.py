@@ -163,6 +163,7 @@ class Subscriptor:
 
             user = await User.find_one(User.id == member.user_id)
             dictified['user'] = user.dict(exclude={'password', 'email', 'verification'})
+            dictified['joined_at'] = member.joined_at.isoformat()
 
             await session.send_event(0, dictified, 'GUILD_MEMBER')
 
