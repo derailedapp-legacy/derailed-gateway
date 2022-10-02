@@ -106,11 +106,11 @@ class Subscriptor:
                     session = self.sessions.get(session_id)
                     websockets.append(session.ws)
 
-                data = {
+                data = msgspec.msgpack.encode({
                     'op': 0,
                     't': message.name,
                     'd': message.data,
-                }
+                })
 
                 broadcast(websockets=websockets, message=data)
 
@@ -126,11 +126,11 @@ class Subscriptor:
                     session = self.sessions.get(session_id)
                     websockets.append(session.ws)
 
-                data = {
+                data = msgspec.msgpack.encode({
                     'op': 0,
                     't': message.name,
                     'd': message.data,
-                }
+                })
 
                 broadcast(websockets=websockets, message=data)
 
