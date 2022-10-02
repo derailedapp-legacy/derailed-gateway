@@ -39,7 +39,7 @@ class Subscriptor:
             ['user', 'security', 'guild', 'track', 'relationships', 'presences', 'messages']
         )
         async for msg in self.consumer:
-            message = msgspec.msgpack.decode(msg, type=Message)
+            message = msgspec.msgpack.decode(msg.value, type=Message)
 
             if message.name == 'USER_DISCONNECT':
                 user = self.user_id_sorted_sessions.get(message.user_id)
