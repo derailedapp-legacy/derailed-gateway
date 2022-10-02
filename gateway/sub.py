@@ -106,7 +106,7 @@ class Subscriptor:
                     session = self.sessions.get(session_id)
                     websockets.append(session.ws)
 
-                data = msgspec.msgpack.encode({
+                data = msgspec.json.encode({
                     'op': 0,
                     't': message.name,
                     'd': message.data,
@@ -126,7 +126,7 @@ class Subscriptor:
                     session = self.sessions.get(session_id)
                     websockets.append(session.ws)
 
-                data = msgspec.msgpack.encode({
+                data = msgspec.json.encode({
                     'op': 0,
                     't': message.name,
                     'd': message.data,
